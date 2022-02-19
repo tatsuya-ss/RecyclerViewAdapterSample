@@ -1,16 +1,26 @@
 package com.example.recyclerviewadaptersample
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recyclerviewadaptersample.databinding.RecyclerViewItemBinding
 
-class RecyclerViewAdapter(private val names: List<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+interface RecyclerViewHolderListener {
+    fun onClickRow(name: String)
+}
 
-    private inner class ViewHolder(val binding: RecyclerViewItemBinding) : RecyclerView.ViewHolder(binding.root) {
+class RecyclerViewAdapter(
+    private val names: List<String>,
+    private val recyclerViewHolderListener: RecyclerViewHolderListener?,
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private inner class ViewHolder(
+        val binding: RecyclerViewItemBinding,
+        private val listener: RecyclerViewHolderListener?,
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun set(name: String) {
             binding.data = name
+            binding.root.setOnClickListener { listener?.onClickRow(name) }
         }
     }
 
@@ -20,11 +30,13 @@ class RecyclerViewAdapter(private val names: List<String>) : RecyclerView.Adapte
             parent,
             false,
         )
-        return ViewHolder(binding)
+        return ViewHolder(binding, recyclerViewHolderListener)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is ViewHolder) { holder.set(names[position]) }
+        if (holder is ViewHolder) {
+            holder.set(names[position])
+        }
     }
 
     override fun getItemCount(): Int {

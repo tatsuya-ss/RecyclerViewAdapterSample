@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.recyclerviewadaptersample.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), RecyclerViewHolderListener {
 
     private lateinit var binding: ActivityMainBinding
     private val names: MutableList<String> = mutableListOf(
@@ -26,8 +26,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerView.adapter = RecyclerViewAdapter(names)
+        binding.recyclerView.adapter = RecyclerViewAdapter(names, this)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    override fun onClickRow(name: String) {
+        println(name)
     }
 
 }
